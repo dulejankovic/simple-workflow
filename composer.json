@@ -1,0 +1,27 @@
+{
+    "name": "dulejankovic/simple-workflow-bundle",
+    "type": "symfony-bundle",
+    "description": "",
+    "require": {
+        "php": "^7.1",
+        "doctrine/doctrine-bundle": "^1.6",
+        "doctrine/orm": "^2.5",
+        "mmucklo/queue-bundle": "dev-master",
+        "symfony/property-access": "^3.4",
+        "symfony/dependency-injection": "^3.0",
+        "symfony/framework-bundle": "^3.4",
+        "symfony/yaml": "*"
+    },
+    "keywords": ["simple-workflow", "workflow",  "async", "queue-bundle"],
+    "license": "GNU General Public License v3.0",
+    "authors": [
+        {
+            "name": "Dusan Jankovic",
+            "email": "dule.jankovic@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {"Xcentric\\SimpleWorkflow\\": ""}
+    }
+}
