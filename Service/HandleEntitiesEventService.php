@@ -9,7 +9,7 @@ use Xcentric\SimpleWorkflow\Annotation\OnDelete;
 use Xcentric\SimpleWorkflow\Annotation\OnInsert;
 use Xcentric\SimpleWorkflow\Annotation\OnUpdate;
 use Xcentric\SimpleWorkflow\Mapping\ActionObject;
-use Xcentric\SimpleWorkflow\Mapping\Workflow;
+use Xcentric\SimpleWorkflow\Annotation\Workflow;
 use Xcentric\SimpleWorkflow\Service\Action\WorkerInterface;
 use Xcentric\SimpleWorkflow\Service\Condition\ConditionInterface;
 
@@ -82,13 +82,13 @@ class HandleEntitiesEventService
     {
         if($workflow->condition){
             if(!$this->container->has($workflow->condition)){
-                throw new \Exception('Condition class not fount');
+                throw new \Exception('Condition class "' . $workflow->condition . '" not found');
             }
             $condition = $this->container->get($workflow->condition);
             if($condition instanceof ConditionInterface){
                 return $condition->check($actionObject);
             }else{
-                throw new \Exception('Condition must be instance of ConditionInterface');
+                throw new \Exception('Condition "' . $workflow->condition . '" must be instance of ConditionInterface');
             }
         }
         return true;
@@ -104,7 +104,7 @@ class HandleEntitiesEventService
     {
         if($workflow->action){
             if(!$this->container->has($workflow->action)){
-                throw new \Exception('Worker class not fount');
+                throw new \Exception('Worker class "' . $workflow->action . '" not found');
             }
             $worker = $this->container->get($workflow->action);
             if($worker instanceof WorkerInterface){
@@ -114,7 +114,7 @@ class HandleEntitiesEventService
                     return $worker->execute($workflow, $actionObject);
                 }
             }else{
-                throw new \Exception('Worker must be instance of WorkerInterface');
+                throw new \Exception('Worker "' . $workflow->action . '" must be instance of WorkerInterface');
             }
         }
     }

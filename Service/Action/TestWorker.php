@@ -3,7 +3,7 @@
 namespace Xcentric\SimpleWorkflow\Service\Action;
 
 use Xcentric\SimpleWorkflow\Mapping\ActionObject;
-use Xcentric\SimpleWorkflow\Mapping\Workflow;
+use Xcentric\SimpleWorkflow\Annotation\Workflow;
 
 /**
  * Class TestWorker
@@ -14,6 +14,11 @@ class TestWorker extends AbstractAction implements WorkerInterface
 
     public function execute(Workflow $workflow, ActionObject $actionObject)
     {
-        sleep(30);
+        sleep(10);
+    }
+
+    public function getName()
+    {
+        return 'Test';
     }
 }

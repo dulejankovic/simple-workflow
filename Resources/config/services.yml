@@ -1,18 +1,14 @@
 services:
-  Xcentric\SimpleWorkflow\Service\ActionChain: ~
-
-  Xcentric\SimpleWorkflow\Service\ConditionChain: ~
-
   Xcentric\SimpleWorkflow\Service\WorkflowQueueService:
     class: Xcentric\SimpleWorkflow\Service\WorkflowQueueService
-    arguments: ['@service_container']
+    arguments: ['@doctrine.orm.entity_manager']
 
-  Xcentric\SimpleWorkflow\Service\EntityChangeListener:
-    class: Xcentric\SimpleWorkflow\Service\EntityChangeListener
+  Xcentric\SimpleWorkflow\EventListener\EntityChangeListener:
+    class: Xcentric\SimpleWorkflow\EventListener\EntityChangeListener
     arguments: ['@service_container']
     tags:
-      - { name: doctrine.event_listener, event: onFlush, connection: default }
-      - { name: doctrine.event_listener, event: postFlush, connection: default }
+      - { name: doctrine.event_listener, event: onFlush }
+      - { name: doctrine.event_listener, event: postFlush }
 
   Xcentric\SimpleWorkflow\Service\HandleEntitiesEventService:
     class: Xcentric\SimpleWorkflow\Service\HandleEntitiesEventService

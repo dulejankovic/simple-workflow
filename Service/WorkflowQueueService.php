@@ -29,7 +29,7 @@ class WorkflowQueueService
 
     private $entitiesChangeSets;
 
-    public function __construct(ContainerInterface $container, EntityManager $entityManager)
+    public function __construct(EntityManager $entityManager)
     {
         $this->entityManager = $entityManager;
         $this->entities = array(
