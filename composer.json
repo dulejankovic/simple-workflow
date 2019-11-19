@@ -13,7 +13,7 @@
         "symfony/yaml": "*"
     },
     "keywords": ["simple-workflow", "workflow",  "async", "queue-bundle"],
-    "license": "GNU General Public License v3.0",
+    "license": "MIT",
     "authors": [
         {
             "name": "Dusan Jankovic",
