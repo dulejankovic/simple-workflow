@@ -1,5 +1,5 @@
 {
-    "name": "dulejankovic/simple-workflow-bundle",
+    "name": "xcentric/simple-workflow-bundle",
     "type": "symfony-bundle",
     "description": "",
     "require": {
