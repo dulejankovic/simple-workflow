@@ -6,7 +6,6 @@
         "php": "^7.1",
         "doctrine/doctrine-bundle": "^1.6",
         "doctrine/orm": "^2.5",
-        "mmucklo/queue-bundle":  "^4.10",
         "symfony/property-access": "^3.4",
         "symfony/dependency-injection": "^3.0",
         "symfony/framework-bundle": "^3.4",
