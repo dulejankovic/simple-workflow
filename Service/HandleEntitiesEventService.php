@@ -59,7 +59,7 @@ class HandleEntitiesEventService
             $actionObject = new ActionObject();
             $actionObject->setEntityId($entity->getId());
             $actionObject->setDatamodelName($className);
-            $actionObject->setChangeSet($changeSet);
+            $actionObject->setChangeSet($this->prepareChangeSet($changeSet));
 
             /** @var Workflow $workflows */
             $workflows = $workflowAnnotation->workflows;
@@ -117,5 +117,19 @@ class HandleEntitiesEventService
                 throw new \Exception('Worker "' . $workflow->action . '" must be instance of WorkerInterface');
             }
         }
+    }
+
+    private function prepareChangeSet(array $changeSet): array
+    {
+        $newChangeSet = [];
+        foreach ($changeSet as $index => $values){
+            foreach ($values as $value){
+                if(is_object($value)){
+                    $value = $value->getId();
+                }
+                $newChangeSet[$index][] = $value;
+            }
+        }
+        return $newChangeSet;
     }
 }
