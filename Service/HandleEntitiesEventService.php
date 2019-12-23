@@ -124,7 +124,7 @@ class HandleEntitiesEventService
         $newChangeSet = [];
         foreach ($changeSet as $index => $values){
             foreach ($values as $value){
-                if(is_object($value)){
+                if(is_object($value) && method_exists($value, 'getId')){
                     $value = $value->getId();
                 }
                 $newChangeSet[$index][] = $value;
