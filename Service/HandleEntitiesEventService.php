@@ -64,7 +64,13 @@ class HandleEntitiesEventService
             /** @var Workflow $workflows */
             $workflows = $workflowAnnotation->workflows;
 
+            /** @var Workflow $workflow */
             foreach ($workflows as $workflow){
+                if(!$workflow->isAsync){
+                    $actionObject->setEntity($entity);
+                }else{
+                    $actionObject->setEntity(null);
+                }
                 if($this->checkCondition($workflow, $actionObject)){
                     $this->createJob($workflow, $actionObject);
                 }

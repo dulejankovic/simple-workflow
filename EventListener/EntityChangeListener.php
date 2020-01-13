@@ -20,12 +20,24 @@ class EntityChangeListener
      */
     protected $container;
 
+    /**
+     * @var WorkflowQueueService
+     */
+    protected $queueList;
+
+    /**
+     * @var HandleEntitiesEventService
+     */
+    protected $entitiesChangeHandler;
+
     protected $scheduledInsertions = [];
     protected static $scheduledUpdates = [];
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(ContainerInterface $container, WorkflowQueueService $queueList, HandleEntitiesEventService $entitiesChangeHandler)
     {
         $this->container = $container;
+        $this->queueList = $queueList;
+        $this->entitiesChangeHandler = $entitiesChangeHandler;
     }
 
     /**
@@ -35,21 +47,17 @@ class EntityChangeListener
     {
         $unitOfWork = $args->getEntityManager()->getUnitOfWork();
 
-        /** @var WorkflowQueueService $queueList */
-        $queueList = $this->container->get(WorkflowQueueService::class);
-
-
         if (count($unitOfWork->getScheduledEntityInsertions()) > 0) {
-            $queueList->addEntities($unitOfWork->getScheduledEntityInsertions(), WorkflowQueueService::SCHEDULED_INSERTIONS);
+            $this->queueList->addEntities($unitOfWork->getScheduledEntityInsertions(), WorkflowQueueService::SCHEDULED_INSERTIONS);
         }
         if (count($unitOfWork->getScheduledEntityUpdates()) > 0) {
             foreach ($unitOfWork->getScheduledEntityUpdates() as $scheduledEntityUpdate) {
-                $queueList->addEntity($scheduledEntityUpdate, WorkflowQueueService::SCHEDULED_UPDATES);
-                $queueList->addEntityChangSet($unitOfWork->getEntityChangeSet($scheduledEntityUpdate),$scheduledEntityUpdate, WorkflowQueueService::SCHEDULED_UPDATES);
+                $this->queueList->addEntity($scheduledEntityUpdate, WorkflowQueueService::SCHEDULED_UPDATES);
+                $this->queueList->addEntityChangSet($unitOfWork->getEntityChangeSet($scheduledEntityUpdate),$scheduledEntityUpdate, WorkflowQueueService::SCHEDULED_UPDATES);
             }
         }
         if (count($unitOfWork->getScheduledEntityDeletions()) > 0) {
-            $queueList->addEntities($unitOfWork->getScheduledEntityDeletions(), WorkflowQueueService::SCHEDULED_DELETE);
+            $this->queueList->addEntities($unitOfWork->getScheduledEntityDeletions(), WorkflowQueueService::SCHEDULED_DELETE);
         }
     }
 
@@ -58,22 +66,16 @@ class EntityChangeListener
      */
     public function postFlush(PostFlushEventArgs $args)
     {
-        /** @var HandleEntitiesEventService $entitiesChangeHandler */
-        $entitiesChangeHandler = $this->container->get(HandleEntitiesEventService::class);
-
-        /** @var WorkflowQueueService $queueList */
-        $queueList = $this->container->get(WorkflowQueueService::class);
-
-        while ($entity = $queueList->popEntity(WorkflowQueueService::SCHEDULED_INSERTIONS)){
-            $entitiesChangeHandler->handle($entity, WorkflowQueueService::SCHEDULED_INSERTIONS);
+        while ($entity = $this->queueList->popEntity(WorkflowQueueService::SCHEDULED_INSERTIONS)){
+            $this->entitiesChangeHandler->handle($entity, WorkflowQueueService::SCHEDULED_INSERTIONS);
         }
 
-        while ($entity = $queueList->popEntity(WorkflowQueueService::SCHEDULED_UPDATES)){
-            $entitiesChangeHandler->handle($entity, WorkflowQueueService::SCHEDULED_UPDATES, $queueList->getEntityChangeSet($entity,WorkflowQueueService::SCHEDULED_UPDATES));
+        while ($entity = $this->queueList->popEntity(WorkflowQueueService::SCHEDULED_UPDATES)){
+            $this->entitiesChangeHandler->handle($entity, WorkflowQueueService::SCHEDULED_UPDATES, $this->queueList->getEntityChangeSet($entity,WorkflowQueueService::SCHEDULED_UPDATES));
         }
 
-        while ($entity = $queueList->popEntity(WorkflowQueueService::SCHEDULED_DELETE)){
-            $entitiesChangeHandler->handle($entity, WorkflowQueueService::SCHEDULED_DELETE);
+        while ($entity = $this->queueList->popEntity(WorkflowQueueService::SCHEDULED_DELETE)){
+            $this->entitiesChangeHandler->handle($entity, WorkflowQueueService::SCHEDULED_DELETE);
         }
     }
 

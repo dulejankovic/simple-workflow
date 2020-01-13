@@ -20,6 +20,8 @@ class ActionObject
 
     protected $changeSet;
 
+    protected $entity;
+
     /**
      * @return mixed
      */
@@ -107,6 +109,24 @@ class ActionObject
     public function setEntityId($entityId): ActionObject
     {
         $this->entityId = $entityId;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEntity()
+    {
+        return $this->entity;
+    }
+
+    /**
+     * @param mixed $entity
+     * @return ActionObject
+     */
+    public function setEntity($entity): ActionObject
+    {
+        $this->entity = $entity;
         return $this;
     }
 }
