@@ -41,6 +41,14 @@ class EntityChangeListener
     }
 
     /**
+     * @param LifecycleEventArgs $args
+     */
+    public function preSoftDelete(LifecycleEventArgs $args)
+    {
+        $this->queueList->addEntity($args->getEntity(), WorkflowQueueService::SCHEDULED_DELETE);
+    }
+
+    /**
      * @param OnFlushEventArgs $args
      */
     public function onFlush(OnFlushEventArgs $args)

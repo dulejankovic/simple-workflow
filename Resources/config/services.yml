@@ -10,6 +10,7 @@ services:
       - '@Xcentric\SimpleWorkflow\Service\WorkflowQueueService'
       - '@Xcentric\SimpleWorkflow\Service\HandleEntitiesEventService'
     tags:
+      - { name: doctrine.event_listener, event: preSoftDelete }
       - { name: doctrine.event_listener, event: onFlush }
       - { name: doctrine.event_listener, event: postFlush }
 
